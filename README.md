@@ -1,4 +1,10 @@
-# enterprise-soc-lab
-Enterprise SOC home lab built with ELK Stack and Docker. Multi-platform log aggregation, MITRE ATT&amp;CK-mapped detection rules, and threat analysis. [Active Development: Windows endpoints, advanced correlation rules, AI/ML integration]
+# SOC Home Lab
+A Security Operations Center home lab vuilt with Wazuh SIEM/XDR for learning threat detection, log analysis and incident response. 
 
-🚧Work In Progress!
+## Overview
+## Architecture
+## Components
+## Detection Coverage
+## Setup Instructions
+## Project Structure
+## Resources 
