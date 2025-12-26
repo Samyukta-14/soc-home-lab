@@ -52,3 +52,5 @@ soc-home-lab/
 - https://documentation.wazuh.com/current/deployment-options/docker/wazuh-container.html
 - https://www.youtube.com/watch?v=QT81wcuoRFY&t=634s
 - https://attack.mitre.org/techniques/enterprise/
+- https://documentation.wazuh.com/current/user-manual/ruleset/rules/custom.html
+- https://smallstep.com/blog/diy-ssh-bastion-host/
