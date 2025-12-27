@@ -1,54 +1,108 @@
 # SOC Home Lab
-A Security Operations Center home lab vuilt with Wazuh SIEM/XDR for learning threat detection, log analysis and incident response. 
+
+A Security Operations Center home lab built with Wazuh SIEM/XDR for learning threat detection, log analysis, and incident response.
 
 ## Overview
-This project simulates an enterprise security monitoring environment with centralized log collection, real-time threat detection, and MITRE ATT&CK mapped detection rules.
 
-### What I built:
-- Wazuh SIEM/XDR platform deployed on Docker Compose
-- Windows and Linux endpoints with security monitoring agents
-- Sysmon integration for deep Windows telemetry
-- File Integrity Monitoring for critical directories
-- Custom detection rules for common attack techniques
+This project simulates an enterprise security monitoring environment with:
+- Documented baselines defining normal activity
+- Custom detection rules for baseline violations
+- MITRE ATT&CK mapped detections
+- Real attack simulation and triage workflows
+
+### The Scenario
+
+A small business environment with:
+- **Windows Workstation** - Business analyst (`jsmith`) using Excel, browser, email, Power BI
+- **Linux SSH Bastion** - Secure gateway for administrative access (`admin` user only)
+- **Wazuh SIEM** - Centralized monitoring and detection
+
 ## Architecture
+
 <p align="center">
   <img src="./images/architecture.png" alt="SOC Lab Architecture" width="800">
 </p>
 
+| System | Role |
+|--------|------|
+| Wazuh Stack | SIEM (Docker Compose) |
+| Windows 10/11 | Employee Workstation |
+| Kali Linux | SSH Bastion | 
+
+## Detection Coverage
+
+### Custom Rules Summary
+
+| Rule ID | Target | Detection | MITRE ATT&CK |
+|---------|--------|-----------|--------------|
+| 100002 | Bastion | SSH login outside work hours (8AM-5PM) | T1078.003, T1021.004 |
+| 100003 | Bastion | Login with legacy `kali` account | T1078.003 |
+| 100004 | Bastion | SSH from Windows workstation (lateral movement) | T1021.004, T1078.003 |
+| 100005 | Windows | SSH client executed | T1021.004 |
+| 100006 | Bastion | New user account created | T1136.001 |
+| 100007 | Bastion | New service installed | T1543.002 |
+| 100011 | Windows | Login outside work hours | T1078.003 |
+| 100012 | Windows | Administrator account used | T1078.003 |
+| 100013 | Windows | PowerShell executed (excludes Wazuh agent) | T1059.001 |
+| 100014 | Windows | cmd.exe spawned from Office apps | T1059.003 |
+| 100015 | Windows | New user account created | T1136.001 |
+
+### MITRE ATT&CK Mapping
+
+| Tactic | Technique | ID | Detection Rules |
+|--------|-----------|-----|-----------------|
+| Initial Access | Valid Accounts: Local | T1078.003 | 100002, 100003, 100011, 100012 |
+| Execution | PowerShell | T1059.001 | 100013 |
+| Execution | Windows Command Shell | T1059.003 | 100014 |
+| Persistence | Create Account: Local | T1136.001 | 100006, 100015 |
+| Persistence | Systemd Service | T1543.002 | 100007 |
+| Lateral Movement | Remote Services: SSH | T1021.004 | 100002, 100004, 100005 |
+
 ## Components
+
 | Component | Purpose | Why I Chose It |
 |-----------|---------|----------------|
-| Wazuh     | SIEM/XDR platform | Free alternative to Splunk with similar capabilities |
-| Docker Compose  | Multi-container orchestration| Deploys all Wazuh components (manager, indexer, dashboard) with single command |
-| Sysmon | Windows telemetry | Windows Event Logs alone didn't show me command line arguments or parent processes |
-| Kali Linux | Linux endpoint | Comes with attack tools pre-installed for simulating threats |
-| Windows 10 | Windows endpoint |  Most enterprise attacks target Windows |
-## Detection Coverage
-### MITRE ATT&CK Techniques
-| Technique ID | Name | Detection Method |
-|--------------|------|------------------|
-| T1059.001 | PowerShell | Sysmon Event ID 1 |
-| T1110 | Brute Force | Failed auth patterns |
-| T1547.001 | Registry Run Keys | Sysmon Event ID 13 |
+| Wazuh | SIEM/XDR platform | Free, enterprise-grade with built-in rules and MITRE mapping |
+| Docker Compose | Container orchestration | Single command deploys manager, indexer, and dashboard |
+| Sysmon | Windows telemetry | Captures process creation, network connections, command lines |
+| Kali Linux | SSH Bastion | Initially configured as endpoint, repurposed as bastion |
+| Windows 10/11 | Employee Workstation | Realistic target for enterprise attacks |
+
+## What Makes This Different
+1. **Baseline Documentation** - Defined normal activity before building detections
+2. **Custom Rules** - Detections tailored to MY environment, not generic signatures
+3. **False Positive Handling** - Tuned rules to exclude legitimate activity 
+4. **Attack Simulation** - Tested each detection with realistic scenarios
+5. **MITRE Mapping** - Every custom rule mapped to ATT&CK framework
 
 ## Project Structure
+
 ```
 soc-home-lab/
 ├── README.md
+├── LICENSE
 ├── images/
 │   └── architecture.png
-├── configs/
-│   ├── ossec-windows.conf
-│   ├── ossec-linux.conf
-│   └── sysmonconfig.xml
 ├── detection-rules/
-│   └── custom-rules.md
+│   ├── local_rules.xml
+│   ├── custom-rules.md
+│   └── mitre-mapping.md
 ├── documentation/
+│   ├── baselines/
+│   │   ├── windows-workstation.md
+│   │   └── linux-bastion.md
+│   ├── environment-scenario.md
 │   ├── phase1-setup.md
 │   ├── phase2-detections.md
 │   └── phase3-investigations.md
+└── configs/
+    ├── ossec-windows.conf
+    ├── ossec-linux.conf
+    └── sysmonconfig.xml
 ```
+
 ## Resources 
+
 - https://documentation.wazuh.com/current/deployment-options/docker/wazuh-container.html
 - https://www.youtube.com/watch?v=QT81wcuoRFY&t=634s
 - https://attack.mitre.org/techniques/enterprise/
