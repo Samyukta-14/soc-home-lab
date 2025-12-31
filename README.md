@@ -82,10 +82,17 @@ soc-home-lab/
 ├── README.md
 ├── LICENSE
 ├── images/
-│   └── architecture.png
+│   ├── architecture.png
+│   ├── wazuh-agents-active.png
+│   ├── alert-after-hours-login.png
+│   ├── alert-powershell-execution.png
+│   ├── alert-ssh-lateral-movement.png
+│   ├── alert-admin-login.png
+│   ├── alert-new-user-created.png
+│   ├── alert-mitre-tags.png
+│   └── custom-rules-deployed.png
 ├── detection-rules/
 │   ├── local_rules.xml
-│   ├── custom-rules.md
 │   └── mitre-mapping.md
 ├── documentation/
 │   ├── baselines/
@@ -93,8 +100,7 @@ soc-home-lab/
 │   │   └── linux-bastion.md
 │   ├── environment-scenario.md
 │   ├── phase1-setup.md
-│   ├── phase2-detections.md
-│   └── phase3-investigations.md
+│   └── phase2-detections.md
 └── configs/
     ├── ossec-windows.conf
     ├── ossec-linux.conf
