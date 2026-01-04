@@ -47,4 +47,3 @@
 ## References
 
 - [MITRE ATT&CK Enterprise Matrix](https://attack.mitre.org/matrices/enterprise/)
-- [Wazuh MITRE Module](https://documentation.wazuh.com/current/user-manual/capabilities/mitre.html)
