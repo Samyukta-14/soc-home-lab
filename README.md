@@ -114,3 +114,4 @@ soc-home-lab/
 - https://attack.mitre.org/techniques/enterprise/
 - https://documentation.wazuh.com/current/user-manual/ruleset/rules/custom.html
 - https://smallstep.com/blog/diy-ssh-bastion-host/
+- https://documentation.wazuh.com/current/user-manual/manager/integration-with-external-apis.html#slack
