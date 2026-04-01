@@ -1,0 +1,140 @@
+<!-- Local rules -->
+
+<!-- Modify it at your will. -->
+<!-- Copyright (C) 2015, Wazuh Inc. -->
+
+<!-- Example -->
+<group name="local,syslog,sshd,">
+
+  <!--
+  Dec 10 01:02:02 host sshd[1234]: Failed none for root from 1.1.1.1 port 1066 ssh2
+  -->
+  <rule id="100001" level="5">
+    <if_sid>5716</if_sid>
+    <srcip>1.1.1.1</srcip>
+    <description>sshd: authentication failed from IP 1.1.1.1.</description>
+    <group>authentication_failed,pci_dss_10.2.4,pci_dss_10.2.5,</group>
+  </rule>
+
+<!-- bastion login outside work hours-->
+  <rule id="100002" level="10">
+    <if_sid>5715</if_sid>
+    <time>5:01 pm - 7:59 am</time>
+    <description>SSH login outside work hours (8AM-5PM) - Baseline violation</description>
+    <group>authentication_success,baseline_violation,</group>
+    <mitre>
+     <id>T1078.003</id>
+     <id>T1021.004</id>
+    </mitre>
+  </rule>
+
+<!-- login using legacy account on bastion -->
+ <rule id="100003" level="12">
+  <if_sid>5715</if_sid>
+  <user>kali</user>
+  <description>SSH login using legacy 'kali' account - Baseline violation</description>
+  <group>authentication_success,baseline_violation,</group>
+  <mitre>
+   <id>T1078.003</id>
+  </mitre>
+ </rule>
+
+<!-- login from unauthorised workstations -->
+ <rule id="100004" level="13">
+  <if_sid>5715</if_sid>
+  <srcip>10.0.0.195</srcip>
+  <description>SSH login from Windows workstation - Possible lateral movement</description>
+  <group>authentication_success,baseline_violation,lateral_movement,</group>
+  <mitre>
+    <id>T1021.004</id>
+    <id>T1078.003</id>
+  </mitre>
+</rule>
+
+<!-- sysmon event ID 1 -->
+<rule id="100005" level="12">
+  <if_sid>61603</if_sid>
+  <field name="win.eventdata.image" type="pcre2">(?i)\\ssh\.exe$</field>
+  <description>SSH client executed on Windows workstation - Possible lateral movement</description>
+  <group>sysmon,baseline_violation,lateral_movement,</group>
+  <mitre>
+    <id>T1021.004</id>
+  </mitre>
+</rule>
+<!-- new user created on bastion -->
+<rule id="100006" level="14">
+  <if_sid>5902</if_sid>
+  <description>New user created on bastion - Critical baseline violation</description>
+  <group>baseline_violation,persistence,</group>
+  <mitre>
+    <id>T1136.001</id>
+  </mitre>
+</rule>
+
+<!-- new service installed on bastion -->
+<rule id="100007" level="14">
+  <if_sid>5904</if_sid>
+  <description>New service installed on bastion - Critical baseline violation</description>
+  <group>baseline_violation,persistence,</group>
+  <mitre>
+    <id>T1543.002</id>
+  </mitre>
+</rule>
+
+<!-- windows workstation login after workhours -->
+
+<rule id="100011" level="10">
+  <if_sid>60106</if_sid>
+  <time>5:01 pm - 7:59 am</time>
+  <description>Windows login outside work hours (8AM-5PM) - Baseline violation</description>
+  <group>baseline_violation,</group>
+  <mitre>
+    <id>T1078.003</id>
+  </mitre>
+</rule>
+
+<!-- admin account used -->
+<rule id="100012" level="12">
+  <if_sid>60106</if_sid>
+  <field name="win.eventdata.targetUserName" type="pcre2">(?i)^Administrator$</field>
+  <description>Administrator account login on Windows workstation - Baseline violation</description>
+  <group>baseline_violation,</group>
+  <mitre>
+    <id>T1078.003</id>
+  </mitre>
+</rule>
+
+<!-- powershell executed -->
+<rule id="100013" level="12">
+  <if_sid>61603</if_sid>
+  <field name="win.eventdata.image" type="pcre2">(?i)\\powershell\.exe$</field>
+  <field name="win.eventdata.parentImage" negate="yes" type="pcre2">(?i)\\wazuh-agent\.exe$</field>
+  <description>PowerShell executed on Windows workstation - Not expected for business analyst</description>
+  <group>baseline_violation,</group>
+  <mitre>
+    <id>T1059.001</id>
+  </mitre>
+</rule>
+
+<!-- cmd.exe spawned from a legit application -->
+<rule id="100014" level="14">
+  <if_sid>61603</if_sid>
+  <field name="win.eventdata.parentImage" type="pcre2">(?i)\\(WINWORD|EXCEL|POWERPNT|OUTLOOK)\.EXE$</field>
+  <field name="win.eventdata.image" type="pcre2">(?i)\\cmd\.exe$</field>
+  <description>cmd.exe spawned from Office application - Possible malware execution</description>
+  <group>baseline_violation,malware,</group>
+  <mitre>
+    <id>T1059.003</id>
+  </mitre>
+</rule> 
+
+<!-- new user created on windows workstation -->
+<rule id="100015" level="14">
+  <if_sid>60109</if_sid>
+  <description>New user account created on Windows workstation - Critical baseline violation</description>
+  <group>baseline_violation,persistence,</group>
+  <mitre>
+    <id>T1136.001</id>
+  </mitre>
+</rule>
+</group>
