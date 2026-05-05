@@ -1,5 +1,4 @@
-# SOC Home Lab
-
+# SOC in a Box
 A Security Operations Center home lab built with Wazuh SIEM/XDR for learning threat detection, log analysis, and incident response.
 
 ## Overview
